@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { syncDatabase } from "./Database/sync";
+import 'mysql2';
 
 dotenv.config();
 
