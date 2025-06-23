@@ -11,7 +11,12 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (_req, res) => {
-    res.send('API funcionando correctamente');
+    try {
+        res.send('API funcionando correctamente');
+    } catch (error) {
+        console.error("Error DB:", error);
+        res.status(500).send("Error al conectar a la base de datos");
+    }
 });
 
 syncDatabase();
