@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { syncDatabase } from "./Database/sync";
 import 'mysql2';
+import { RouterProducts } from './api/Routes/Product.Routes';
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.get('/', (_req, res) => {
         res.status(500).send("Error al conectar a la base de datos");
     }
 });
+app.use("/api/v1/products", RouterProducts);
+
 
 syncDatabase();
 
