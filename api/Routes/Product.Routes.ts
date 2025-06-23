@@ -1,24 +1,40 @@
 import { Router } from "express";
 import { authenticate, authorizeRole } from "../Middlewares/Auth-Middlewares";
 import { UserRoleEnum } from "../../Enums/UserRoleEnum";
-import { getPromocionalProducts } from "../Controllers/Product.Controller";
+import {
+    getPromocionalProducts,
+    getProductsToSale,
+    getProductById,
+    getFilteringOptionsPagedListProduct,
+    getFilteringOptionsPriceList,
+    getHomeInfo,
+    changeStatuts,
+    saveProduct,
+    getProductsPagedLists,
+    getPriceListProducts,
+    updatePriceProduct,
+    updateAllProductsPrice,
+} from "../Controllers/Product.Controller";
 
 const router: Router = Router();
 
-router.get("/promotional", getPromocionalProducts)
-// .get("/getProductsToSale", getProductsToSale)
-// .get("/product", getProductById)
-// .get("/getFilteringOptionsPagedListProduct", getFilteringOptionsPagedListProduct)
-// .get("/getFilteringOptionsPriceList", getFilteringOptionsPriceList)
-// .get("/getHomeInfo", getHomeInfo);
+// ✅ Rutas públicas (sin auth)
+router.get("/promotional", getPromocionalProducts);
+router.get("/getProductsToSale", getProductsToSale);
+router.get("/product", getProductById);
+router.get("/getFilteringOptionsPagedListProduct", getFilteringOptionsPagedListProduct);
+router.get("/getFilteringOptionsPriceList", getFilteringOptionsPriceList);
+router.get("/getHomeInfo", getHomeInfo);
 
-// router.use(authenticate).use(authorizeRole([UserRoleEnum.Admin]));
+// ✅ Middleware aplicado desde este punto
+router.use(authenticate, authorizeRole([UserRoleEnum.Admin]));
 
-// router.put("/product", changeStatuts)
-//     .post("/saveProduct", saveProduct)
-//     .get("/pagedList", getProductsPagedLists)
-//     .get("/getPriceListProducts", getPriceListProducts)
-//     .put("/updatePriceProduct", updatePriceProduct)
-//     .put("/updateAllProductsPrice", updateAllProductsPrice);
+// ✅ Rutas protegidas (con auth + rol Admin)
+router.put("/product", changeStatuts);
+router.post("/saveProduct", saveProduct);
+router.get("/pagedList", getProductsPagedLists);
+router.get("/getPriceListProducts", getPriceListProducts);
+router.put("/updatePriceProduct", updatePriceProduct);
+router.put("/updateAllProductsPrice", updateAllProductsPrice);
 
 export { router as RouterProducts };
