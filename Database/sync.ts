@@ -1,5 +1,6 @@
 import "dotenv/config";
 import sequelize from "./connection";
+import "./assosiations";
 
 
 export async function syncDatabase() {
@@ -8,9 +9,9 @@ export async function syncDatabase() {
         await sequelize.authenticate();
         console.log("Conexión establecida correctamente.");
 
-        // await sequelize.sync({ force: false });
+        await sequelize.sync({ force: false });
 
-        // console.log(`Tablas sincronizadas correctamente.`);
+        console.log(`Tablas sincronizadas correctamente.`);
     } catch (error) {
         console.error("Error sincronizando las tablas:", error);
     }
