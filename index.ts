@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { syncDatabase } from "../Database/sync";
+import { syncDatabase } from "./Database/sync";
 
 
 dotenv.config();
