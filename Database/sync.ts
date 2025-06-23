@@ -1,6 +1,6 @@
 import "dotenv/config";
 import sequelize from "./connection";
-import "./assosiations";
+import "./associations";
 
 
 export async function syncDatabase() {
