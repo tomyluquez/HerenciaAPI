@@ -72,6 +72,8 @@ export enum Errors {
     SizeNotFound = "Error al cargar el talle, por favor intente nuevamente.",
     SizeWhitProducts = "El talle no puede ser desactivado porque tiene productos asociados.",
 
+    CouponSave = "Error al guardar el cupón, por favor intente nuevamente.",
+
 
     UserProfile = "Error al cargar el perfil del usuario, por favor intente nuevamente.",
     UserRegister = "Error al registrar el usuario, por favor intente nuevamente.",

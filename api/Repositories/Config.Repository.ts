@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { CompanyInfoVM } from "../../Models/Company/CompanyInfo.model";
 import CompanyInfo from "../../Database/Models/Company.Model";
-import { mapCompanyInfoDBToVM, mapConfigDBToVM, mapMenuDBToVM } from "../../Helpers/Map/CompanyMap";
+import { mapCompanyInfoDBToVM, mapConfigDBToVM, mapCouponsDBToVM, mapMenuDBToVM } from "../../Helpers/Map/CompanyMap";
 import { Errors } from "../../Enums/Errors.enum";
 import { MenuVM } from "../../Models/Menu.model";
 import Menu from "../../Database/Models/Menu.model";
@@ -14,6 +14,10 @@ import { Success } from "../../Enums/SuccessEnum";
 import { SaveConfigDTO } from "../../Interfaces/Config/SaveConfig.interface";
 import sequelize from "../../Database/connection";
 import { IConfigVM } from "../../Interfaces/Config/Config.interface";
+import { SearchCouponList } from "../../Interfaces/DiscountCoupon.interface";
+import { DiscountCouponPagedListVM } from "../../Models/Order/DiscountCoupon.model";
+import DiscountCoupon from "../../Database/Models/DiscountCoupon.model";
+import { SaveCouponDTO } from "../../Interfaces/saveCoupon.interface";
 
 export const getCompanyInfoRepository = async (IsActive: boolean | undefined): Promise<CompanyInfoVM> => {
     const response = new CompanyInfoVM();
@@ -60,6 +64,27 @@ export const getConfigRepository = async (search: SearchConfigDTO): Promise<Conf
     if (configDB.length > 0) {
         response.Items = configDB.map(mapConfigDBToVM);
         response.TotalItems = await Config.count();
+    } else {
+        response.setError(Errors.ConfigNotFound);
+    }
+
+    return response;
+};
+
+export const getDiscountCouponsRepository = async (search: SearchCouponList): Promise<DiscountCouponPagedListVM> => {
+    const response = new DiscountCouponPagedListVM();
+    const offset = (search.Pagination.Page - 1) * search.Pagination.Limit;
+
+    const couponsDB = await DiscountCoupon.findAll({
+        where: {
+            ...(search.Name && { Name: { [Op.like]: `%${search.Name}%` } }),
+            ...(search.Status && { IsActive: search.Status })
+        },
+        offset, limit: search.Pagination.Limit
+    });
+    if (couponsDB.length > 0) {
+        response.Items = couponsDB.map(mapCouponsDBToVM);
+        response.TotalItems = await DiscountCoupon.count();
     } else {
         response.setError(Errors.ConfigNotFound);
     }
@@ -131,6 +156,37 @@ export const saveConfigRepository = async (toSave: SaveConfigDTO): Promise<Respo
             response.setSuccess(Success.SaveSize);
         } else {
             response.setError(Errors.SizeSave);
+        }
+    }
+
+    return response;
+};
+
+export const saveCouponRepository = async (toSave: SaveCouponDTO): Promise<ResponseMessages> => {
+    const response = new ResponseMessages();
+
+    if (toSave.Id) {
+        const [affectedRow] = await DiscountCoupon.update(
+            {
+                Discount: toSave.Discount,
+            },
+            {
+                where: {
+                    Id: toSave.Id
+                }
+            }
+        );
+        if (affectedRow > 0) {
+            response.setSuccess(Success.UpdateCoupon);
+        } else {
+            response.setError(Errors.CouponSave);
+        }
+    } else {
+        const newCoupon = await DiscountCoupon.create(toSave);
+        if (newCoupon) {
+            response.setSuccess(Success.SaveCoupon);
+        } else {
+            response.setError(Errors.CouponSave);
         }
     }
 
