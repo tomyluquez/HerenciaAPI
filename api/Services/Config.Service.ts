@@ -31,12 +31,12 @@ export const saveCompanyInfoService = async (bodyParams: SaveCompanyInfoDTO): Pr
     return await saveCompanyInfoRepository(bodyParams);
 };
 
-export const saveConfigService = async (bodyParams: SaveConfigDTO[]): Promise<ResponseMessages> => {
-    const duplicatedNames = validateDuplicateNameConfig(bodyParams);
-    if (duplicatedNames) {
-        const response = new ResponseMessages();
-        response.setError(Errors.ConfigDuplicatedName);
-        return response;
-    }
-    return await saveConfigRepository(bodyParams);
+export const saveConfigService = async (toSave: SaveConfigDTO): Promise<ResponseMessages> => {
+    // const duplicatedNames = validateDuplicateNameConfig(toSave);
+    // if (duplicatedNames) {
+    //     const response = new ResponseMessages();
+    //     response.setError(Errors.ConfigDuplicatedName);
+    //     return response;
+    // }
+    return await saveConfigRepository(toSave);
 };

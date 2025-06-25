@@ -6,12 +6,18 @@ export class CheckoutInfoVM extends ResponseMessages {
     PaymentsMethods: IPaymentsMethodsVM[];
     ShippingMethods: IShippingMethodsVM[];
     SubtotalToPaid: number;
+    MinTotalToFreeShipping: number;
 
     constructor() {
         super();
         this.PaymentsMethods = [];
         this.ShippingMethods = [];
         this.SubtotalToPaid = 0;
+        this.MinTotalToFreeShipping = 0;
+    }
+
+    setMinTotalToFreeShipping(total: number) {
+        this.MinTotalToFreeShipping = total;
     }
 
     setSubtotalToPaid(total: number) {

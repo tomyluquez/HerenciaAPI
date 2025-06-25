@@ -63,11 +63,11 @@ export const saveCompanyInfo = async (req: Request, res: Response): Promise<void
 };
 
 export const saveConfigInfo = async (req: Request, res: Response): Promise<void> => {
-    const body = req.body.config;
-    const bodyParamsArray = mapSaveConfigBodyToDTO(body);
+    const body = req.body;
+    const toSave = mapSaveConfigBodyToDTO(body);
 
     try {
-        const response = await saveConfigService(bodyParamsArray);
+        const response = await saveConfigService(toSave);
         res.status(200).json(response);
     } catch (error: any) {
         const response = new ResponseMessages();

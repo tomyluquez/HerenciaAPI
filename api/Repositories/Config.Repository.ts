@@ -13,6 +13,7 @@ import { SaveCompanyInfoDTO } from "../../Interfaces/Company/SaveCompany.interfa
 import { Success } from "../../Enums/SuccessEnum";
 import { SaveConfigDTO } from "../../Interfaces/Config/SaveConfig.interface";
 import sequelize from "../../Database/connection";
+import { IConfigVM } from "../../Interfaces/Config/Config.interface";
 
 export const getCompanyInfoRepository = async (IsActive: boolean | undefined): Promise<CompanyInfoVM> => {
     const response = new CompanyInfoVM();
@@ -66,6 +67,20 @@ export const getConfigRepository = async (search: SearchConfigDTO): Promise<Conf
     return response;
 };
 
+export const getFreeShippinhFromConfigRepository = async (id: number): Promise<IConfigVM> => {
+    let response = {} as IConfigVM;
+
+    const configDB = await Config.findOne({ where: { ...(id && { Id: id }) } });
+    if (configDB) {
+        response = configDB;
+    } else {
+        throw new Error(Errors.ConfigNotFound);
+    }
+
+    return response;
+};
+
+
 
 export const saveCompanyInfoRepository = async (bodyParams: SaveCompanyInfoDTO): Promise<ResponseMessages> => {
     const response = new ResponseMessages();
@@ -91,18 +106,32 @@ export const saveCompanyInfoRepository = async (bodyParams: SaveCompanyInfoDTO):
     return response;
 };
 
-export const saveConfigRepository = async (bodyParams: SaveConfigDTO[]): Promise<ResponseMessages> => {
+export const saveConfigRepository = async (toSave: SaveConfigDTO): Promise<ResponseMessages> => {
     const response = new ResponseMessages();
-    console.log(bodyParams);
 
-    const config = await Config.bulkCreate(bodyParams, {
-        updateOnDuplicate: ["Name", "Value"] // Si hay un duplicado, actualizar estos campos
-    });
-
-    if (config.length > 0) {
-        response.setSuccess(Success.SaveConfig);
+    if (toSave.Id) {
+        const [affectedRow] = await Config.update(
+            {
+                Value: toSave.Value,
+            },
+            {
+                where: {
+                    Id: toSave.Id
+                }
+            }
+        );
+        if (affectedRow > 0) {
+            response.setSuccess(Success.UpdateSize);
+        } else {
+            response.setError(Errors.SizeSave);
+        }
     } else {
-        response.setError(Errors.ConfigSave);
+        const newConfig = await Config.create(toSave);
+        if (newConfig) {
+            response.setSuccess(Success.SaveSize);
+        } else {
+            response.setError(Errors.SizeSave);
+        }
     }
 
     return response;

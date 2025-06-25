@@ -44,16 +44,10 @@ export const mapSaveCompanyInfoBodyToDTO = (body: any): SaveCompanyInfoDTO => {
     };
 };
 
-export const mapSaveConfigBodyToDTO = (body: any[]): SaveConfigDTO[] => {
-    return body.map((config) => {
-        const dto: SaveConfigDTO = {
-            Name: config.Name,
-            Value: config.Value
-        };
-        if (config.Id) {
-            dto.Id = config.Id;
-        }
-
-        return dto;
-    });
+export const mapSaveConfigBodyToDTO = (body: any): SaveConfigDTO => {
+    return {
+        Id: body.Id || 0,
+        Name: body.Name,
+        Value: body.Value,
+    };
 };
