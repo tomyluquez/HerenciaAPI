@@ -95,7 +95,7 @@ export const getOrderDetailByIdRepository = async (orderId: number): Promise<Ord
             {
                 model: User,
                 as: "User",
-                attributes: ["Name"],
+                attributes: ["Name", "Phone", "Email"],
             },
             {
                 model: OrderItems,
