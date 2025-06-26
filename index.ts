@@ -20,9 +20,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', async (_req, res) => {
+app.get('/', (_req, res) => {
     try {
-        await syncDatabase();
         res.send('La ruta no fue encontrada, para utilizar la api debe ingresar /api/v1/');
     } catch (error) {
         console.error("Error DB:", error);
