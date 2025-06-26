@@ -58,7 +58,7 @@ export const getProductsPagedLists = async (req: Request, res: Response): Promis
         res.status(200).send(response);
     } catch (error: any) {
         const response = new ProductPagedListVM();
-        response.setError(Errors.Products);
+        response.setError(error.message);
         res.status(500).send(response);
     }
 };

@@ -37,12 +37,12 @@ export const getUserProfileByUserName = async (req: Request, res: Response): Pro
 };
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-    const { userName, email, password, role } = req.body;
+    const { userName, email, password, role, phone } = req.body;
     try {
         if (!userName) throw new Error(Errors.UserNameRequired);
         if (!email) throw new Error(Errors.UserEmailRequired);
         if (!password) throw new Error(Errors.UserPassRequired);
-        const newUser = mapUserRegisterBodyToDTO(userName, email, password, Number(role));
+        const newUser = mapUserRegisterBodyToDTO(userName, email, password, Number(role), Number(phone));
         const response = await registerUserService(newUser);
         res.status(200).send(response);
     } catch (error: any) {

@@ -14,5 +14,7 @@ export interface IOrderDetailVM {
     PaymentMethod?: string;
     ShippingMethod?: string;
     CustomerName: string;
+    CustomerEmail: string;
+    CustomerPhone?: number;
     Details?: OrderItem[];
 }   

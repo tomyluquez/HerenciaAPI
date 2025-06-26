@@ -25,6 +25,9 @@ export enum Success {
     UpdateSize = "El talle se actualizó correctamente.",
     SaveSize = "El talle se guardó correctamente.",
 
+    UpdateCoupon = "El cupón se actualizó correctamente.",
+    SaveCoupon = "El cupón se guardó correctamente.",
+
     UserRegister = "Usuario registrado correctamente.",
     UserLogin = "Inicio de sesión correctamente.",
 

@@ -6,11 +6,13 @@ export class FilteringOptionsProductStockVM extends ResponseMessages {
     Categories: NameAndId[];
     Sizes: NameAndId[];
     Status: NameAndId[];
+    RelatedProducts: NameAndId[];
 
     constructor() {
         super();
         this.Categories = [];
         this.Sizes = [];
+        this.RelatedProducts = [];
         this.Status = new StatusOptions().items;
     }
 
@@ -20,5 +22,9 @@ export class FilteringOptionsProductStockVM extends ResponseMessages {
 
     addSizes(sizes: NameAndId[]) {
         this.Sizes = sizes;
+    }
+
+    addRelatedProducts(relatedProducts: NameAndId[]) {
+        this.RelatedProducts = relatedProducts;
     }
 }

@@ -26,12 +26,13 @@ export const mapUserProfileDBToVM = (userProfileDB: User): IUserProfileVM => {
     };
 };
 
-export const mapUserRegisterBodyToDTO = (userName: string, email: string, pass: string, role: number): UserRegisterDTO => {
+export const mapUserRegisterBodyToDTO = (userName: string, email: string, pass: string, role: number, phone: number): UserRegisterDTO => {
     return {
         Name: userName,
         Email: email,
         Password: pass,
-        Role: role || UserRoleEnum.Customer
+        Role: role || UserRoleEnum.Customer,
+        Phone: phone
     };
 };
 

@@ -1,11 +1,14 @@
 import CompanyInfo from "../../Database/Models/Company.Model";
 import Config from "../../Database/Models/Config.model";
+import DiscountCoupon from "../../Database/Models/DiscountCoupon.model";
 import Menu from "../../Database/Models/Menu.model";
 import { ICompanyInfoVM } from "../../Interfaces/Company/CompanyInfo.interface";
 import { SaveCompanyInfoDTO } from "../../Interfaces/Company/SaveCompany.interface";
 import { IConfigVM } from "../../Interfaces/Config/Config.interface";
 import { SaveConfigDTO } from "../../Interfaces/Config/SaveConfig.interface";
+import { IDiscountCoupon } from "../../Interfaces/DiscountCoupon.interface";
 import { IMenuVM } from "../../Interfaces/Menu.interface";
+import { SaveCouponDTO } from "../../Interfaces/saveCoupon.interface";
 
 export const mapCompanyInfoDBToVM = (companyInfoDB: CompanyInfo): ICompanyInfoVM => {
     return {
@@ -34,26 +37,54 @@ export const mapConfigDBToVM = (configDB: Config): IConfigVM => {
     };
 };
 
-export const mapSaveCompanyInfoBodyToDTO = (body: any): SaveCompanyInfoDTO => {
+export const mapCouponsDBToVM = (couponDB: DiscountCoupon): IDiscountCoupon => {
     return {
-        Id: body.Id || 0,
+        Id: couponDB.Id,
+        Name: couponDB.Name,
+        Discount: couponDB.Discount,
+        DateCreated: couponDB.DateCreated.toISOString(),
+        IsActive: couponDB.IsActive
+    };
+};
+
+export const mapSaveCompanyInfoBodyToDTO = (body: any): SaveCompanyInfoDTO => {
+    const dto: SaveCompanyInfoDTO = {
         Name: body.Name,
         Value: body.Value,
         Icon: body.Icon,
         IsActive: body.IsActive
     };
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
 };
 
-export const mapSaveConfigBodyToDTO = (body: any[]): SaveConfigDTO[] => {
-    return body.map((config) => {
-        const dto: SaveConfigDTO = {
-            Name: config.Name,
-            Value: config.Value
-        };
-        if (config.Id) {
-            dto.Id = config.Id;
-        }
+export const mapSaveConfigBodyToDTO = (body: any): SaveConfigDTO => {
+    const dto: SaveConfigDTO = {
+        Id: body.Id || 0,
+        Name: body.Name,
+        Value: body.Value,
+    };
 
-        return dto;
-    });
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
+};
+
+export const mapSaveCouponBodyToDTO = (body: any): SaveCouponDTO => {
+    const dto: SaveCouponDTO = {
+        Name: body.Name,
+        Discount: Number(body.Discount),
+        IsActive: body.IsActive
+    };
+
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
 };

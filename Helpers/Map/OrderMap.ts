@@ -53,6 +53,8 @@ export const mapOrderDetailDBToVm = (order: Order): IOrderDetailVM => {
         PaymentMethod: order.PaymentMethod?.Name || "Sin método de pago",
         ShippingMethod: order.ShippingMethod?.Name || "Sin método de envío",
         CustomerName: order.User?.Name || "",
+        CustomerPhone: order.User?.Phone || 0,
+        CustomerEmail: order.User?.Email || "",
         Details: order.OrderItems?.map((orderItem) => {
             return {
                 Id: orderItem.Id,

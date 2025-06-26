@@ -1,4 +1,5 @@
 import Product from "../../Database/Models/Product.model";
+import RelatedProduct from "../../Database/Models/RelatedProducts.Model";
 import Variant from "../../Database/Models/Variant.model";
 import { PaginationEnum } from "../../Enums/PaginationEnum";
 import { IPriceListProducts } from "../../Interfaces/Product/PriceListProduct.interface";
@@ -36,7 +37,15 @@ export const mapProductDBToVM = (productDB: Product): IProductVM => {
         IsActive: productDB.IsActive,
         IsPromotional: productDB.IsPromotional,
         PromotionalPrice: productDB.PromotionalPrice,
-        Rentability: productDB.Rentability
+        Rentability: productDB.Rentability,
+        RelatedProductIds: productDB.RelatedProducts!.map((rp) => rp.RelatedProductId),
+        RelatedProducts: productDB.RelatedProducts!.map((rp) => {
+            return {
+                Name: rp.Related?.Name,
+                Id: rp.Related?.Id,
+                Image: rp.Related?.Images && rp.Related?.Images.length > 0 ? rp.Related?.Images[0].Url : ""
+            };
+        })
     };
     return product;
 };

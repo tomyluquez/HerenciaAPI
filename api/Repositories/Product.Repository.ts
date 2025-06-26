@@ -21,6 +21,9 @@ import { PriceListProductsSearchDTO } from "../../Interfaces/Search/PriceListPro
 import { PriceListProductsVM } from "../../Models/Product/PriceListProduct.model";
 import { UpdateAllPriceProductDTO, UpdatePriceProductDTO } from "../../Interfaces/Product/UpdatePriceProduct.interface";
 import { ActionTypePriceListEnum } from "../../Enums/ActionTypePriceListEnum";
+import RelatedProduct from "../../Database/Models/RelatedProducts.Model";
+import { productHelper } from "../../Helpers/ProductHelper";
+import { NameAndId } from "../../Interfaces/NameAndId.interface";
 
 export const getAllProductsRepository = async (search: GetAllProductsSearchDTO): Promise<ProductVM> => {
     const offset = (search.Pagination.Page - 1) * search.Pagination.Limit;
@@ -325,6 +328,25 @@ export const getProductByIdRepository = async (id: number): Promise<ProductVM> =
                 attributes: ["Name"]
             },
             {
+                model: RelatedProduct,
+                as: "RelatedProducts",
+                include: [
+                    {
+                        model: Product,
+                        as: "Related",
+                        attributes: ["Name", "Id"],
+                        include: [
+                            {
+                                model: ProductImages,
+                                as: "Images",
+                                attributes: ["Url"]
+                            }
+                        ]
+
+                    }
+                ]
+            },
+            {
                 model: Variant,
                 as: "Variants",
                 attributes: ["Id", "Stock"],
@@ -354,6 +376,21 @@ export const getProductByIdRepository = async (id: number): Promise<ProductVM> =
 
     return product;
 };
+
+export const getRelatedProductsRepositroy = async (): Promise<NameAndId[]> => {
+    let response = [] as NameAndId[];
+    try {
+        const ProductsDB = await Product.findAll({
+            where: { IsActive: true },
+            attributes: ["Name", "Id"]
+        });
+        response = ProductsDB.map((product) => ({ Name: product.Name, Id: product.Id }));
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+
+    return response;
+}
 
 export const changeStatusRepsitory = async (Id: number, IsActive: boolean) => {
     let response = new ResponseMessages();
@@ -466,10 +503,20 @@ export const saveProductRepository = async (product: IProductVM): Promise<Respon
                 await ProductImages.bulkCreate(imagesToInsert, { transaction });
             }
 
-            await transaction.commit(); // Confirmar la transacción
         }
+        if (product.RelatedProductIds && product.RelatedProductIds.length > 0) {
+            await RelatedProduct.destroy({
+                where: { ProductId: product.Id },
+                transaction
+            });
+            const relatedProducts = productHelper.prepareRelatedProducts(product.Id!, product.RelatedProductIds);
+
+            await RelatedProduct.bulkCreate(relatedProducts, { transaction });
+        }
+        await transaction.commit(); // Confirmar la transacción
 
         if (affectedRows === 0) {
+            await transaction.rollback();
             response.setError(Errors.ProductSave);
             return response;
         }
@@ -492,6 +539,11 @@ export const saveProductRepository = async (product: IProductVM): Promise<Respon
             }));
 
             await ProductImages.bulkCreate(imagesToInsert, { transaction });
+        }
+        if (product.RelatedProductIds && product.RelatedProductIds.length > 0) {
+            const relatedProducts = productHelper.prepareRelatedProducts(newproduct.Id!, product.RelatedProductIds);
+
+            await RelatedProduct.bulkCreate(relatedProducts, { transaction });
         }
 
         await transaction.commit();
