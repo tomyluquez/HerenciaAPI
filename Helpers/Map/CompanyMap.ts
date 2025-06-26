@@ -48,29 +48,43 @@ export const mapCouponsDBToVM = (couponDB: DiscountCoupon): IDiscountCoupon => {
 };
 
 export const mapSaveCompanyInfoBodyToDTO = (body: any): SaveCompanyInfoDTO => {
-    return {
-        Id: body.Id || 0,
+    const dto: SaveCompanyInfoDTO = {
         Name: body.Name,
         Value: body.Value,
         Icon: body.Icon,
         IsActive: body.IsActive
     };
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
 };
 
 export const mapSaveConfigBodyToDTO = (body: any): SaveConfigDTO => {
-    return {
+    const dto: SaveConfigDTO = {
         Id: body.Id || 0,
         Name: body.Name,
         Value: body.Value,
     };
+
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
 };
 
 export const mapSaveCouponBodyToDTO = (body: any): SaveCouponDTO => {
-    return {
-        Id: body.Id || 0,
+    const dto: SaveCouponDTO = {
         Name: body.Name,
-        Discount: body.Discount,
+        Discount: Number(body.Discount),
         IsActive: body.IsActive
     };
-};
 
+    if (body.Id && body.Id !== 0) {
+        dto.Id = body.Id;
+    }
+
+    return dto;
+};

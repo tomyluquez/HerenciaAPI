@@ -169,6 +169,8 @@ export const saveCouponRepository = async (toSave: SaveCouponDTO): Promise<Respo
         const [affectedRow] = await DiscountCoupon.update(
             {
                 Discount: toSave.Discount,
+                Name: toSave.Name,
+                IsActive: toSave.IsActive
             },
             {
                 where: {
