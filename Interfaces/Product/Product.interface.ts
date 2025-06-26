@@ -1,4 +1,5 @@
 import { IProductVariants } from "./ProductVariants.interface";
+import { IRelatedProduct } from "./RelatedProduct.interface";
 
 export interface IProductVM {
     Id: number;
@@ -15,4 +16,6 @@ export interface IProductVM {
     Cost: number;
     IsActive: boolean;
     IsPromotional: boolean;
+    RelatedProductIds?: number[];
+    RelatedProduct?: IRelatedProduct[];
 }

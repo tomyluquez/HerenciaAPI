@@ -3,6 +3,7 @@ import sequelize from "../connection";
 import Category from "./Category.model";
 import Variant from "./Variant.model";
 import ProductImages from "./ProductImages.model";
+import RelatedProduct, { RelatedProductAttributes } from "./RelatedProducts.Model";
 
 export interface ProductAttributes {
     Id: number;
@@ -39,6 +40,7 @@ class Product extends Model<ProductAttributes, ProductCreationAttributes> implem
     public Variants?: Variant[];
     public Images?: ProductImages[];
     public Rentability!: number;
+    public RelatedProducts?: RelatedProduct[]
 }
 
 Product.init(

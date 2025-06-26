@@ -9,6 +9,7 @@ import PaymentMethod from "./Models/PaymentMethod.model";
 import Product from "./Models/Product.model";
 import ProductImages from "./Models/ProductImages.model";
 import Promotion from "./Models/Promotion.model";
+import RelatedProduct from "./Models/RelatedProducts.Model";
 import Shipping from "./Models/Shipping.model";
 import ShippingMethod from "./Models/ShippingMethod.model";
 import Size from "./Models/Size.model";
@@ -19,6 +20,11 @@ import Variant from "./Models/Variant.model";
 Product.belongsTo(Category, {
     foreignKey: "CategoryId",
     as: "Category"
+});
+
+RelatedProduct.belongsTo(Product, {
+    foreignKey: "RelatedProductId",
+    as: "Related"
 });
 
 ProductImages.belongsTo(Product, {
@@ -88,6 +94,10 @@ Shipping.belongsTo(Order, {
 Category.hasMany(Product, {
     foreignKey: "CategoryId",
     as: "Products"
+});
+Product.hasMany(RelatedProduct, {
+    foreignKey: "ProductId",
+    as: "RelatedProducts"
 });
 User.hasMany(Cart);
 Cart.hasMany(CartItems);

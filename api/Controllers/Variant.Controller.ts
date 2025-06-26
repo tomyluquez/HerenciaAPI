@@ -6,6 +6,7 @@ import { mapDataToNameAndId, mapQueryProductsStockSearchToDTO, mapQueryProductVa
 import { FilteringOptionsProductStockVM } from "../../Models/FilteringOptions/FilteringOptionsProductStock.model";
 import { getAllCategoriesService } from "../Services/Category.service";
 import { getSizesListService } from "../Services/Size.Service";
+import { getRelatedProductsRepositroy } from "../Repositories/Product.Repository";
 
 export const getProductVariants = async (req: Request, res: Response): Promise<void> => {
     const { productId } = req.query;
@@ -41,8 +42,10 @@ export const getFilteringOptionsProductStock = async (req: Request, res: Respons
     try {
         const categories = await getAllCategoriesService({ IsActive: true, Pagination: { Page: 1, Limit: 1000 }, Name: "" })
         const sizes = await getSizesListService({ Name: "", IsActive: true, Pagination: { Page: 1, Limit: 1000 } })
+        const relatedProducts = await getRelatedProductsRepositroy();
         response.addCategories(mapDataToNameAndId(categories.Items))
         response.addSizes(mapDataToNameAndId(sizes.Items))
+        response.addRelatedProducts(relatedProducts)
         res.status(200).send(response);
     } catch (error: any) {
         response.setError(error.message || Errors.ProductVariants);
